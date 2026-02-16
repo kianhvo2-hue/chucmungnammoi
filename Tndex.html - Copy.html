@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Năm Mới 2026</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* ẢNH PHÔNG NỀN TO CỦA BẠN */
+            background: url('https://i.postimg.cc/7PtRCr06/Screenshot-2026-02-16-125019.png') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #000;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Phong cách ảnh bay bổng của bạn */
+        .photo {
+            position: absolute;
+            z-index: 10;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .p1 {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 10%;
+            transform: rotate(-10deg);
+        }
+
+        .p2 {
+            width: 170px;
+            height: 170px;
+            top: 12%;
+            right: 10%;
+            transform: rotate(15deg);
+        }
+
+        .p3 {
+            width: 190px;
+            height: 190px;
+            bottom: 15%;
+            left: 12%;
+            transform: rotate(8deg);
+        }
+
+        .p4 {
+            width: 160px;
+            height: 160px;
+            bottom: 20%;
+            right: 15%;
+            transform: rotate(-12deg);
+        }
+
+        .p5 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid #ffd700;
+        }
+
+        /* HIỆU ỨNG CHỮ CHẠY TỪ DƯỚI LÊN */
+        .loi-chuc {
+            position: fixed;
+            bottom: -50px;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 20px;
+            white-space: nowrap;
+            text-shadow: 0 0 10px #ff0000;
+            z-index: 5;
+            animation: moveUp 6s linear infinite;
+        }
+
+        @keyframes moveUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-110vh);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            html {
+                zoom: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+    <canvas id="canvas"></canvas>
+
+    <img src="https://i.postimg.cc/3wSKWbB8/Screenshot-2026-02-16-130548.png" class="photo p1">
+    <img src="https://i.postimg.cc/VNjq8nB0/Screenshot-2026-02-16-131549.png" class="photo p2">
+    <img src="https://i.postimg.cc/Jzsx9s2p/Screenshot-2026-02-16-131407.png" class="photo p3">
+    <img src="https://i.postimg.cc/5Nh8djvX/Screenshot-2026-02-15-234040.png" class="photo p4">
+    <img src="https://i.postimg.cc/m2yWt5Lp/Screenshot-2026-02-16-130928.png" class="photo p5">
+
+    <script>
+        // --- PHẦN 1: TẠO CHỮ CHẠY ---
+        const messages = [
+            "Năm mới Vui Vẻ", "Luôn Luôn Vui Vẻ",
+            "Mãi Mãi Hạnh Phúc", "Mọi Điều Bình An"
+        ];
+
+        function createMessage() {
+            const msg = document.createElement('div');
+            msg.className = 'loi-chuc';
+            msg.innerText = messages[Math.floor(Math.random() * messages.length)];
+            msg.style.left = Math.random() * 80 + 10 + "%"; // Chạy ngẫu nhiên theo chiều ngang
+            msg.style.animationDuration = (Math.random() * 2 + 3) + "s"; // Tốc độ nhanh chậm khác nhau
+            document.body.appendChild(msg);
+
+            // Xóa chữ sau khi chạy xong để nhẹ máy
+            setTimeout(() => { msg.remove(); }, 7000);
+        }
+        setInterval(createMessage, 1000); // Cứ 0.8 giây hiện 1 dòng mới
+
+        // --- PHẦN 2: PHÁO HOA DÀY ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, color, velocity) {
+                this.x = x; this.y = y; this.color = color; this.velocity = velocity;
+                this.alpha = 1; this.friction = 0.96;
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
+            }
+            update() {
+                this.velocity.x *= this.friction; this.velocity.y *= this.friction;
+                this.velocity.y += 0.05; this.x += this.velocity.x; this.y += this.velocity.y;
+                this.alpha -= 0.012;
+            }
+        }
+
+        let particles = [];
+        function createFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height * 0.7;
+            const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+            for (let i = 0; i < 80; i++) {
+                const angle = (Math.PI * 2) / 80 * i;
+                const power = Math.random() * 12;
+                particles.push(new Particle(x, y, color, { x: Math.cos(angle) * power, y: Math.sin(angle) * power }));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => { if (p.alpha > 0) { p.update(); p.draw(); } else { particles.splice(i, 1); } });
+        }
+        setInterval(createFirework, 400);
+        animate();
+    </script>
+
+</body>
+</html>
